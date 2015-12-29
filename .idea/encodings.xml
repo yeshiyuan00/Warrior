@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="jar://$PROJECT_DIR$/app/libs/baidumapapi_v3_0_0.jar!/assets/CMRequire.dat" charset="GBK" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

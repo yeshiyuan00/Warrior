@@ -1,9 +1,10 @@
 package com.ysy.warrior;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 
-public class SplashActivity extends ActionBarActivity {
+import com.ysy.warrior.activity.BaseActivity;
+
+public class SplashActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
