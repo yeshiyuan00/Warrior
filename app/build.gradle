@@ -1,4 +1,23 @@
+buildscript{
+
+    repositories{
+        mavenCentral()
+        maven(){
+            name 'RoboBinding AspectJPlugin Maven Repository'
+            url "https://github.com/RoboBinding/RoboBinding-aspectj-plugin/raw/master/mavenRepo"
+        }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.+'
+        classpath 'org.robobinding:aspectj-plugin:0.8.4'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.+'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'org.robobinding.android-aspectj'
 
 android {
     compileSdkVersion 23
@@ -11,11 +30,26 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    android {
+        //这里是禁止xml中使用bind命名空间时报错的
+        lintOptions {
+            disable 'UnusedAttribute', 'ValidFragment', 'GradleDependency', 'OnClick', 'MissingPrefix', 'MenuTitle'
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven() {
+        name 'SonaType snapshot repository'
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
 }
 
@@ -34,4 +68,42 @@ dependencies {
     //内存泄露检测
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+
+    //以下SDK开发者请根据需要自行选择
+    //bmob-sdk ：Bmob的android sdk包
+    compile 'cn.bmob.android:bmob-sdk:3.4.3'
+    //bmob-im：bmob的im包，以下两个配置是im功能所需
+    compile 'cn.bmob.android:bmob-im:1.1.9'
+    compile 'cn.bmob.android:bmob-sdk:3.4.3'
+
+    //okhttp（选填）：为解决弱网情况下SDK请求失败及响应慢的问题，自`V3.4.3版本`开始使用`okhttp`优化SDK的网络框架。
+    compile 'com.squareup.okhttp:okhttp:2.4.0'
+    compile 'com.squareup.okio:okio:1.4.0'
+    compile 'com.android.support:recyclerview-v7:23.+'
+    //日志打印
+    compile 'com.orhanobut:logger:1.8'
+    //图片加载库
+    compile 'com.facebook.fresco:fresco:0.4.0+'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    //滚动检测
+    compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
+    //内存泄露检测
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+    //swpie删除
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
+    //swipe -- from h6ah4i
+    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.7.1'
+    //recylerViewItem动画
+    compile 'jp.wasabeef:recyclerview-animators:1.2.0@aar'
+    compile 'com.android.support:design:23.+'
+    compile 'com.balysv:material-ripple:1.0.2'
+    compile('org.robobinding:robobinding:0.8.9:with-aop-and-dependencies') {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+    aspectPath("org.robobinding:robobinding:0.8.9:with-aop-and-dependencies") {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+    apt "org.robobinding:codegen:0.8.9"
+    androidTestCompile 'com.jayway.android.robotium:robotium-solo:5.2.1'
 }
