@@ -43,6 +43,30 @@
         <item name="android:layout_marginTop">10.0dip</item>
     </style>
 
+    <style name="Menu_ll">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">58dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="Menu_iv">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">26dp</item>
+    </style>
+
+    <style name="Menu_tv" parent="MM">
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="MM">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
     <style name="CommonTitleTV" parent="WW">
         <item name="android:textSize">16.0sp</item>
         <item name="android:gravity">center</item>

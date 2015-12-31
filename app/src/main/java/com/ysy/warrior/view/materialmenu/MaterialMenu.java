@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.ysy.warrior.view.meterialmenu;
+package com.ysy.warrior.view.materialmenu;
 
 import android.view.animation.Interpolator;
 
-import app.hanks.com.conquer.view.materialmenu.MaterialMenuDrawable.IconState;
+import com.ysy.warrior.view.materialmenu.MaterialMenuDrawable.IconState;
 
 /**
  * API for interaction with {@link MaterialMenuDrawable}

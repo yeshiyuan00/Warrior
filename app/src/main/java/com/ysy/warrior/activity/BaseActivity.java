@@ -2,11 +2,11 @@ package com.ysy.warrior.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -162,7 +162,7 @@ public abstract class BaseActivity extends FragmentActivity {
      * @param fragment 要切换的Fragment
      */
     protected void changeFramgnt(int id, Fragment fragment) {
-        getFragmentManager().beginTransaction().replace(id, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(id, fragment).commit();
     }
 
     /**
