@@ -82,6 +82,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     private void initDrawerMenu() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //设置抽屉菜单左边剩余的空间的阴影
         drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
         drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override

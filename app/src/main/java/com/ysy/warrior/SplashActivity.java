@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.ysy.warrior.Util.A;
 import com.ysy.warrior.Util.L;
 import com.ysy.warrior.Util.NetUtils;
+import com.ysy.warrior.Util.PollingUtils;
 import com.ysy.warrior.Util.T;
 import com.ysy.warrior.activity.BaseActivity;
 import com.ysy.warrior.activity.LoginActivity;
@@ -22,6 +23,7 @@ import com.ysy.warrior.activity.MainActivity;
 import com.ysy.warrior.config.Constants;
 import com.ysy.warrior.location.LocationInfo;
 import com.ysy.warrior.location.LocationService;
+import com.ysy.warrior.service.AlertService;
 
 import cn.bmob.im.BmobChat;
 import cn.bmob.v3.Bmob;
@@ -113,7 +115,7 @@ public class SplashActivity extends BaseActivity {
 
     private void startPollService() {
         // 开启后台自习检测服务,60s
-        // PollingUtils.startPollingService(this, 60, AlertService.class, AlertService.ACTION);
+        PollingUtils.startPollingService(this, 60, AlertService.class, AlertService.ACTION);
     }
 
     @SuppressLint("HandlerLeak")

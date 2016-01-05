@@ -10,7 +10,12 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.ysy.warrior.R;
+import com.ysy.warrior.Util.CollectionUtils;
+import com.ysy.warrior.Util.UserDataUtils;
+import com.ysy.warrior.bean.User;
 import com.ysy.warrior.view.CircularImageView;
+
+import java.util.List;
 
 /**
  * User: ysy
@@ -76,6 +81,22 @@ public class MenuFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onResume() {
         // TODO: 2015/12/31
+        initUserData();
+        UserDataUtils.queryUserByUsername(context, currentUser.getUsername(),
+                new UserDataUtils.QueryUserDataListener() {
+                    @Override
+                    public void onSuccess(List<User> arg0) {
+                        if (CollectionUtils.isNotNull(arg0)) {
+                            currentUser = arg0.get(0);
+                            initUserData();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int errorCode, String msg) {
+
+                    }
+                });
         super.onResume();
     }
 
