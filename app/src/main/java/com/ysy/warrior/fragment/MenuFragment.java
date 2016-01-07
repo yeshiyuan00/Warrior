@@ -57,7 +57,7 @@ public class MenuFragment extends BaseFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.iv_photo:
                 // TODO: 2015/12/31
-                // BusProvider.getInstance().post(new MenuPhotoClickEvent());
+                 // BusProvider.getInstance().post(new MenuPhotoClickEvent());
                 break;
             case R.id.ll_friend:
                 // TODO: 2015/12/31
