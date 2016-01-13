@@ -26,7 +26,7 @@ android {
     defaultConfig {
         applicationId "com.ysy.warrior"
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
         versionName "1.0"
     }
@@ -87,9 +87,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     //滚动检测
     compile 'com.github.ksoichiro:android-observablescrollview:1.5.0'
-    //内存泄露检测
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+
     //swpie删除
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     //swipe -- from h6ah4i

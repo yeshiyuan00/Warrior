@@ -2,12 +2,15 @@ package com.ysy.warrior.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.squareup.otto.Subscribe;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -16,6 +19,7 @@ import com.ysy.warrior.R;
 import com.ysy.warrior.Util.A;
 import com.ysy.warrior.Util.L;
 import com.ysy.warrior.Util.NetUtils;
+import com.ysy.warrior.Util.PixelUtil;
 import com.ysy.warrior.Util.T;
 import com.ysy.warrior.config.Constants;
 import com.ysy.warrior.otto.BusProvider;
@@ -44,13 +48,58 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private String gender;
     private String city;
 
+    private View welcome;
+    private View line;
+    private View bottom;
+    private View bg;
+    private SsoHandler mSsoHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setFullScreen();
         findViewById(R.id.bt_qq).setOnClickListener(this);
         findViewById(R.id.bt_sina).setOnClickListener(this);
 
         BusProvider.getInstance().register(this);
+        bindViews();
+        showAnim();
+    }
+
+    /**
+     * 设置为全屏显示
+     */
+    private void setFullScreen() {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        View decorView = getWindow().getDecorView();
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+        int uiOption = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOption);
+    }
+
+    private void bindViews() {
+        bg = findViewById(R.id.bg);
+        welcome = findViewById(R.id.welcome);
+        line = findViewById(R.id.line);
+        bottom = findViewById(R.id.bottom);
+    }
+
+    private void showAnim() {
+        int DURATION = 400;
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        //首先是背景
+        bg.animate().translationY(-metrics.heightPixels + PixelUtil.dp2px(220)).setDuration(DURATION).start();
+        line.animate().scaleX(1).setDuration(DURATION).setStartDelay(DURATION).start();
+
+        welcome.animate().alpha(1).setDuration(DURATION).setStartDelay(DURATION).start();
+
+        bottom.animate().alpha(1).setDuration(DURATION).setStartDelay(DURATION).start();
     }
 
     @Override
@@ -115,7 +164,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             String userId = jsonObject.getString("openid");
             String expiresIn = jsonObject.getString("expires_in");
             String accessToken = jsonObject.getString("access_token");
-
             BmobUser.BmobThirdUserAuth authInfo = new
                     BmobUser.BmobThirdUserAuth("qq", accessToken, expiresIn, userId);
             BmobUser.loginWithAuthData(context, authInfo, new OtherLoginListener() {
@@ -128,7 +176,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 @Override
                 public void onFailure(int code, String msg) {
                     // TODO Auto-generated method stub
-                    Log.i("smile", "第三方登陆失败：" + msg);
+                    Log.i("smile", "第三方登陆失败：" + +code +"-" +msg);
                 }
             });
         } catch (JSONException e) {
@@ -180,7 +228,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         params.put("format", "json");// 格式--非必填项
                     }
                     String result = NetUtils.getRequest("https://graph.qq.com/user/get_user_info", params);
-                    L.i("QQ的个人信息："+result);
+                    L.i("QQ的个人信息：" + result);
                     JSONObject json = new JSONObject(result);
                     nickName = json.getString("nickname");
                     gender = json.getString("gender");

@@ -2,6 +2,7 @@ package com.ysy.warrior;
 
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import com.ysy.warrior.Util.A;
 import com.ysy.warrior.Util.L;
 import com.ysy.warrior.Util.NetUtils;
 import com.ysy.warrior.Util.PollingUtils;
+import com.ysy.warrior.Util.SystemBarTintManager;
 import com.ysy.warrior.Util.T;
 import com.ysy.warrior.activity.BaseActivity;
 import com.ysy.warrior.activity.LoginActivity;
@@ -44,6 +46,11 @@ public class SplashActivity extends BaseActivity {
         goMainActivity();                         //界面跳转
     }
 
+    @Override
+    protected void setStatusBarColor(SystemBarTintManager tintManager, int color) {
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setStatusBarTintColor(Color.WHITE);
+    }
 
     @Override
     protected void initTitleBar(ViewGroup rl_title, TextView tv_title, ImageButton ib_back, ImageButton ib_right, View shadow) {

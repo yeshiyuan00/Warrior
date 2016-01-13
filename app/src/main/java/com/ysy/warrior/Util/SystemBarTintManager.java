@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * User: ysy
  * Date: 2015/12/29
  * Time: 16:36
- * <p>
+ * <p/>
  * Class to manage status and navigation bar tint effects when using KitKat
  * translucent system UI modes.
  */
@@ -78,17 +78,20 @@ public class SystemBarTintManager {
         ViewGroup decorViewGroup = (ViewGroup) win.getDecorView();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            //win.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);在values-19下
+            // 的style中加入<item name="android:windowTranslucentStatus">true</item>使得状态栏透明
             //check theme attr
-            int attrs[] = {android.R.attr.windowTranslucentStatus,
+            int[] attrs = {android.R.attr.windowTranslucentStatus,
                     android.R.attr.windowTranslucentNavigation};
             TypedArray a = activity.obtainStyledAttributes(attrs);
-
             try {
                 mStatusBarAvailable = a.getBoolean(0, false);
                 mNavBarAvailable = a.getBoolean(1, false);
             } finally {
                 a.recycle();
             }
+
+            System.out.println("tttt: sa=" + mStatusBarAvailable + "  na=" + mNavBarAvailable);
             // check window flags
             WindowManager.LayoutParams winParams = win.getAttributes();
             int bits = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS;
@@ -120,7 +123,7 @@ public class SystemBarTintManager {
 
     /**
      * Enable tinting of the system status bar.
-     * <p>
+     * <p/>
      * If the platform is running Jelly Bean or earlier, or translucent system
      * UI modes have not been enabled in either the theme or via window flags,
      * then this method does nothing.
@@ -136,7 +139,7 @@ public class SystemBarTintManager {
 
     /**
      * Enable tinting of the system navigation bar.
-     * <p>
+     * <p/>
      * If the platform does not have soft navigation keys, is running Jelly Bean
      * or earlier, or translucent system UI modes have not been enabled in
      * either the theme or via window flags, then this method does nothing.
@@ -439,7 +442,7 @@ public class SystemBarTintManager {
 
         private int getInternalDimensionSize(Resources res, String key) {
             int result = 0;
-            int resourceId = res.getIdentifier(key, "diem", "android");
+            int resourceId = res.getIdentifier(key, "dimen", "android");
             if (resourceId > 0) {
                 result = res.getDimensionPixelSize(resourceId);
             }

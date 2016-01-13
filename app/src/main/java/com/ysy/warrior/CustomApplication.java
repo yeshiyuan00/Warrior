@@ -12,7 +12,6 @@ import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.squareup.leakcanary.LeakCanary;
 import com.ysy.warrior.Util.CollectionUtils;
 import com.ysy.warrior.Util.SP;
 
@@ -54,7 +53,7 @@ public class CustomApplication extends Application {
         BmobChat.DEBUG_MODE = true;
         DbUtils.create(getApplicationContext()).configDebug(false);
         Fresco.initialize(getApplicationContext());
-        LeakCanary.install(this);
+       // LeakCanary.install(this);
 
         init();
     }

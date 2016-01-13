@@ -150,9 +150,29 @@ public abstract class BaseActivity extends FragmentActivity {
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void initStatusBar() {
+        int theme = (Integer) SP.get(context, "theme", 0);
+        int color = R.color.theme_0;
+        switch (theme) {
+            case 0:
+                color = R.color.theme_0;
+                break;
+            case 1:
+                color = R.color.theme_1;
+                break;
+            case 2:
+                color = R.color.theme_2;
+                break;
+            case 3:
+                color = R.color.theme_3;
+                break;
+        }
         SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        setStatusBarColor(tintManager, color);
+    }
+
+    protected void setStatusBarColor(SystemBarTintManager tintManager, int color) {
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintColor(getResources().getColor(R.color.title));
+        tintManager.setStatusBarTintColor(getResources().getColor(color));
     }
 
     /**

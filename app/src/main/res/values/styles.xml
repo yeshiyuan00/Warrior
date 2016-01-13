@@ -1,8 +1,10 @@
 <resources>
 
 
-    <style name="App_Theme" parent="AppBaseTheme">
-        <item name="android:windowNoTitle">true</item>
+    <style name="App_Theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/theme_0</item>
+        <item name="colorPrimaryDark">@color/theme_0</item>
+        <item name="colorAccent">@color/style_color_accent</item>
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
