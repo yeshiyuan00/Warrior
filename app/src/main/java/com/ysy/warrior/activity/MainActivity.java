@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
@@ -14,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.squareup.otto.Subscribe;
 import com.ysy.warrior.R;
 import com.ysy.warrior.Util.PixelUtil;
 import com.ysy.warrior.Util.SP;
@@ -21,6 +23,7 @@ import com.ysy.warrior.fragment.MenuFragment;
 import com.ysy.warrior.fragment.MyTaskFragment;
 import com.ysy.warrior.fragment.OtherTaskFragment;
 import com.ysy.warrior.otto.BusProvider;
+import com.ysy.warrior.otto.MenuPhotoClickEvent;
 import com.ysy.warrior.view.OpAnimationView;
 import com.ysy.warrior.view.materialmenu.MaterialMenuView;
 
@@ -65,6 +68,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initMain();
 
         BusProvider.getInstance().register(this);
+    }
+
+    @Subscribe
+    public void goUserData(MenuPhotoClickEvent event) {
+        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            //A.goOtherActivity(context, UserDataActivity.class);
+            userDataFlag = true;
+        }
     }
 
     private void initMain() {

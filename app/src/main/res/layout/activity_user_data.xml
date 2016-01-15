@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:fitsSystemWindows="true">
+
+    <com.ysy.warrior.view.RevealBackgroundView
+        android:id="@+id/vRevealBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.github.ksoichiro.android.observablescrollview.ObservableScrollView
+        android:id="@+id/sv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollY="166dp"
+        android:scrollbars="none"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <ImageView
+                android:id="@+id/iv_home_bg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/home_bg_height"
+                android:scaleType="centerCrop"
+                android:src="@drawable/home_bg" />
+
+            <View
+                android:id="@+id/iv_camera"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="-28dp"
+                android:background="@drawable/ic_camera" />
+
+            <include
+                android:id="@+id/data"
+                layout="@layout/fragment_mydata"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:id="@+id/album"
+                style="@style/MW"
+                android:layout_margin="8dp"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="invisible">
+
+                <TextView
+                    style="@style/WW"
+                    android:src="@drawable/ic_school"
+                    android:text="相册"
+                    android:textColor="@color/red_button"
+                    android:textSize="22sp" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/ll_album"
+                        style="@style/MW"
+                        android:orientation="horizontal"></LinearLayout>
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="200dp"></View>
+
+            <LinearLayout
+                style="@style/MW"
+                android:layout_margin="8dp"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:visibility="gone">
+
+                <TextView
+                    style="@style/WW"
+                    android:src="@drawable/ic_school"
+                    android:text="标签"
+                    android:textColor="@color/red_button"
+                    android:textSize="22sp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_label"
+                    style="@style/MW"
+                    android:orientation="vertical"></LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.github.ksoichiro.android.observablescrollview.ObservableScrollView>
+
+    <View
+        android:id="@+id/topView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/home_bg_height"
+        android:alpha="0"
+        android:background="?attr/colorValue" />
+
+    <include layout="@layout/user_data_title" />
+
+    <com.ysy.warrior.view.CircularImageView
+        android:id="@+id/iv_photo"
+        android:layout_width="@dimen/photo_size"
+        android:layout_height="@dimen/photo_size"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/photo_top"
+        android:alpha="0"
+        android:clickable="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/default_photo"
+        app:border="false"
+        app:selector="false"
+        app:shadow="false" />
+
+</RelativeLayout>
