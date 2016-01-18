@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
-    android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <!-- 主界面 -->
 
-    <include layout="@layout/layout_main"/>
+    <include
+        layout="@layout/layout_main" />
 
     <!-- 滑动菜单 -->
     <FrameLayout
@@ -16,7 +17,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:clipToPadding="false"
-        android:fitsSystemWindows="true">
-    </FrameLayout>
+        android:fitsSystemWindows="true"></FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

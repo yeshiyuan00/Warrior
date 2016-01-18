@@ -13,10 +13,12 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 import com.ysy.warrior.R;
+import com.ysy.warrior.Util.A;
 import com.ysy.warrior.Util.PixelUtil;
 import com.ysy.warrior.Util.SP;
 import com.ysy.warrior.fragment.MenuFragment;
@@ -25,6 +27,7 @@ import com.ysy.warrior.fragment.OtherTaskFragment;
 import com.ysy.warrior.otto.BusProvider;
 import com.ysy.warrior.otto.MenuPhotoClickEvent;
 import com.ysy.warrior.view.OpAnimationView;
+import com.ysy.warrior.view.materialmenu.MaterialMenuDrawable;
 import com.ysy.warrior.view.materialmenu.MaterialMenuView;
 
 import cn.bmob.v3.datatype.BmobGeoPoint;
@@ -47,6 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private boolean isFirst = true;
     private boolean userDataFlag;
 
+    private RelativeLayout layout_main;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +72,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initMain();
 
         BusProvider.getInstance().register(this);
+        layout_main = (RelativeLayout) findViewById(R.id.id_layout_main);
     }
 
     @Subscribe
@@ -99,16 +104,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
-
+                layout_main.setTranslationX(drawerView.getWidth() * slideOffset);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
 //                materialMenu.animatePressedState(MaterialMenuDrawable.IconState.X);
+                materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
+                materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
                 if (userDataFlag) {
                     int[] location = new int[]{PixelUtil.dp2px(20), PixelUtil.dp2px(56)};
                     UserDataActivity.startUserProfileFromLocation(location, MainActivity.this);
@@ -143,9 +150,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return View.inflate(context, R.layout.layout_main, null);
     }
 
+    /**
+     * 切换侧滑菜单布局打开或关闭
+     */
+    public void toggle() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+            materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
+        } else {
+            // materialMenu.animateState(MaterialMenuDrawable.IconState.X);
+            drawerLayout.openDrawer(GravityCompat.START);
+        }
+    }
+
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.material_menu:
+                toggle();
+                break;
+            case R.id.iv_search:
+                A.goOtherActivityNoAnim(context, SearchResultActivity.class);
+                break;
+            case R.id.iv_add:
+                launcherAddTaskActivity(v);
+                break;
+        }
+    }
 
+    public void launcherAddTaskActivity(View v) {
+        int[] startingLocation = new int[2];
+        v.getLocationOnScreen(startingLocation);
+        startingLocation[0] += v.getWidth() / 2;
+        AddTaskActivity.startUserProfileFromLocation(startingLocation, this);
+        overridePendingTransition(0, 0);
     }
 
     private void startIntroAnimation() {

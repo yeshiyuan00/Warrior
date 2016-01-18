@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hanks="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/id_layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
@@ -15,8 +16,7 @@
         android:layout_below="@+id/title"
         android:background="@color/main_bg"
         android:fitsSystemWindows="true"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
     <ImageView
         android:id="@+id/iv_arraw"
@@ -27,7 +27,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="-32dp"
         android:src="@drawable/drag_circle"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <include
         android:id="@+id/title"
@@ -35,17 +35,16 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/title_height_with_shadow"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/title_shadow_height_3"/>
+        android:layout_marginBottom="@dimen/title_shadow_height_3" />
 
     <com.ysy.warrior.view.OpAnimationView
         android:id="@+id/iv_add"
-        hanks:shapeRadius="6dp"
-        hanks:backgroundColor="@color/red_button"
-        hanks:shapeWidth="2dp"
         android:layout_width="@dimen/btn_fab_size"
         android:layout_height="@dimen/btn_fab_size"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-       />
+        hanks:backgroundColor="@color/red_button"
+        hanks:shapeRadius="6dp"
+        hanks:shapeWidth="2dp" />
 </RelativeLayout>

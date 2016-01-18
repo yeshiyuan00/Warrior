@@ -75,6 +75,7 @@
         <activity android:name=".activity.DialogActivity" />
         <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.UserDataActivity"/>
+        <activity android:name=".activity.AddTaskActivity"/>
 
         <!-- qq授权需要注册该activity -->
         <activity
