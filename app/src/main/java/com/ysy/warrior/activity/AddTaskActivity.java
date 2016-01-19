@@ -1,8 +1,6 @@
 package com.ysy.warrior.activity;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,6 +30,9 @@ import com.ysy.warrior.view.FlowLayout;
 import com.ysy.warrior.view.OpAnimationView;
 import com.ysy.warrior.view.RevealBackgroundView;
 import com.ysy.warrior.view.SoundWaveView;
+import com.ysy.warrior.view.datetime.datepicker.DatePickerDialog;
+import com.ysy.warrior.view.datetime.timepicker.RadialPickerLayout;
+import com.ysy.warrior.view.datetime.timepicker.TimePickerDialog;
 import com.ysy.warrior.view.materialmenu.MaterialMenuDrawable;
 import com.ysy.warrior.view.materialmenu.MaterialMenuView;
 
@@ -323,7 +324,30 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
         mCalendar.add(Calendar.MINUTE, 60);  // 设成60分钟后
         setTimeAndTip(new SimpleDateFormat("yyyy/MM/dd").format(mCalendar.getTime()) + ""
                 + pad(mCalendar.get(Calendar.HOUR_OF_DAY)) + ":" + pad(mCalendar.get(Calendar.MINUTE)));
-        // TODO: 2016/1/18  
+        timePickerDialog24h = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+                setTimeAndTip(tv_date.getText()
+                        + " "
+                        + new StringBuilder().append(pad(hourOfDay)).append(":").append(pad(minute))
+                        .toString());
+            }
+        }, mCalendar.get(Calendar.HOUR_OF_DAY), mCalendar.get(Calendar.MINUTE), true);
+
+
+        datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
+                Calendar c = Calendar.getInstance();
+                c.set(year, month, day);
+                headTime = c.getTimeInMillis();
+                initWeekday(c);
+                tv_date.setText(new StringBuilder().append(pad(year)).append("/").append(pad(month + 1))
+                        .append("/").append(pad(day)));
+                setTimeAndTip(tv_date.getText() + " " + tv_time.getText());
+            }
+        }, mCalendar.get(Calendar.YEAR), mCalendar.get(Calendar.MONTH), mCalendar.get(Calendar.DAY_OF_MONTH));
+        int curYear = mCalendar.get(Calendar.YEAR);
+        datePickerDialog.setYearRange(curYear, mCalendar.get(Calendar.MONTH) >= 11 ? curYear + 1 : curYear);
     }
 
     /**

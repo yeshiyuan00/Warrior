@@ -111,6 +111,17 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
+    <style name="time_label">
+        <item name="android:textSize">@dimen/time_label_size</item>
+        <item name="android:textColor">@color/numbers_text_color</item>
+    </style>
+
+    <style name="ampm_label">
+        <item name="android:textSize">@dimen/ampm_label_size</item>
+        <item name="android:textColor">@color/ampm_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="CommonTitleTV" parent="WW">
         <item name="android:textSize">16.0sp</item>
         <item name="android:gravity">center</item>
