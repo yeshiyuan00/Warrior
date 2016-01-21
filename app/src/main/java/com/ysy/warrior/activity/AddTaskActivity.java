@@ -47,6 +47,7 @@ import com.ysy.warrior.view.datetime.timepicker.TimePickerDialog;
 import com.ysy.warrior.view.materialmenu.MaterialMenuDrawable;
 import com.ysy.warrior.view.materialmenu.MaterialMenuView;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -512,6 +513,9 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
             case R.id.material_menu:
                 super.onBackPressed();
                 break;
+            case R.id.ib_img:
+                selectPic();
+                break;
             case R.id.ib_save:
                 if (currentUser != null) {
                     saveTask();
@@ -520,6 +524,14 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
                     T.show(context, "请先登录");
                 }
         }
+    }
+
+    /**
+     * 添加图片
+     */
+    private void selectPic() {
+        Intent intent = new Intent(context, AlbumActivity.class);
+        startActivityForResult(intent, REQUES_IMG);
     }
 
     /**
@@ -584,5 +596,79 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(0, 0); //按下返回键时没有切换动画效果
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        L.d(requestCode + "," + resultCode + "," + data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUES_IMG) {
+                List<String> imagePathList = data.getStringArrayListExtra(AlbumActivity.INTENT_SELECTED_PICTURE);
+                if (imagePathList.size() <= 0) {
+                    return;
+                }
+                File f = new File(imagePathList.get(0));
+                L.e("照片路径：" + f.getAbsolutePath());
+                if (f.exists()) {
+                    iv.setVisibility(View.VISIBLE);
+                    loader.displayImage("file://" + f.getAbsolutePath(), iv, option_pic);
+                    uploadPic(f);
+                }
+            } else if (REQUES_FRIEND == requestCode) {
+                User user = (User) data.getSerializableExtra("selectUser");
+                if (user != null)
+                    addFriend(user);
+                else
+                    L.e("返回的好友空空");
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 添加好友布局
+     *
+     * @param toUsers
+     */
+    private void addFriend(final User toUsers) {
+        if (!atFriends.contains(toUsers.getObjectId())) {// 防止重复
+            atFriends.add(toUsers.getObjectId());
+            at.add(toUsers);
+            final TextView tv = new TextView(context);
+            // 必须
+            ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.WRAP_CONTENT,
+                    ViewGroup.MarginLayoutParams.WRAP_CONTENT);
+            tv.setLayoutParams(lp);
+            tv.setBackgroundResource(R.drawable.btn_little_grey_f);
+            if (atFriends.size() > 0)
+                tv.setText(" @" + toUsers.getNick() + "  ");
+            ll_at_friend.addView(tv);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ll_at_friend.removeView(tv);
+                    atFriends.remove(toUsers);
+                }
+            });
+        }
+    }
+
+    /**
+     * 上传
+     *
+     * @param f
+     */
+    private void uploadPic(File f) {
+        TaskUtil.upLoadFile(context, f, new TaskUtil.UpLoadListener() {
+            @Override
+            public void onSuccess(String url) {
+                task.setImageUrl(url);
+            }
+
+            @Override
+            public void onFailure(int error, String msg) {
+                T.show(context, "上传失败");
+            }
+        });
     }
 }

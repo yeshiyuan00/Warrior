@@ -7,6 +7,7 @@ import com.ysy.warrior.bean.User;
 import com.ysy.warrior.config.Constants;
 import com.ysy.warrior.db.TaskDao;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,8 +15,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.DeleteListener;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.UploadFileListener;
 
 /**
  * 任务的逻辑
@@ -185,6 +188,31 @@ public class TaskUtil {
 
 
     /**
+     * 上传一个文件
+     *
+     * @param context
+     * @param f
+     * @param upLoadListener
+     */
+    public static void upLoadFile(final Context context, File f, final UpLoadListener upLoadListener) {
+        final BmobFile bf = new BmobFile(f);
+        bf.uploadblock(context, new UploadFileListener() {
+            @Override
+            public void onSuccess() {
+                L.d("上传文件成功" + bf.getFileUrl(context));
+                upLoadListener.onSuccess(bf.getFileUrl(context));
+            }
+
+            @Override
+            public void onFailure(int arg0, String arg1) {
+                L.d("上传文件失败" + arg0 + arg1);
+                upLoadListener.onFailure(arg0, arg1);
+            }
+        });
+    }
+
+
+    /**
      * 根据时间戳获取描述性时间，如3分钟后，1天后
      *
      * @param timestamp 时间戳 单位为毫秒
@@ -245,5 +273,11 @@ public class TaskUtil {
             timeStr = "刚刚";
         }
         return timeStr;
+    }
+
+    public interface UpLoadListener {
+        void onSuccess(String url);
+
+        void onFailure(int error, String msg);
     }
 }

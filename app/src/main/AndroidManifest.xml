@@ -76,6 +76,7 @@
         <activity android:name=".activity.LoginActivity"/>
         <activity android:name=".activity.UserDataActivity"/>
         <activity android:name=".activity.AddTaskActivity"/>
+        <activity android:name=".activity.AlbumActivity"/>
 
         <!-- qq授权需要注册该activity -->
         <activity
