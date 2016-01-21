@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -18,14 +19,24 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.ysy.warrior.R;
+import com.ysy.warrior.Util.A;
 import com.ysy.warrior.Util.AudioUtils;
+import com.ysy.warrior.Util.CollectionUtils;
+import com.ysy.warrior.Util.L;
+import com.ysy.warrior.Util.MsgUtils;
 import com.ysy.warrior.Util.PixelUtil;
 import com.ysy.warrior.Util.SP;
+import com.ysy.warrior.Util.T;
 import com.ysy.warrior.Util.TaskUtil;
 import com.ysy.warrior.Util.TimeUtil;
+import com.ysy.warrior.bean.Card;
 import com.ysy.warrior.bean.Task;
 import com.ysy.warrior.bean.User;
+import com.ysy.warrior.db.TaskDao;
+import com.ysy.warrior.otto.BusProvider;
+import com.ysy.warrior.otto.RefreshEvent;
 import com.ysy.warrior.view.FlowLayout;
 import com.ysy.warrior.view.OpAnimationView;
 import com.ysy.warrior.view.RevealBackgroundView;
@@ -43,6 +54,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import cn.bmob.im.BmobChatManager;
+import cn.bmob.v3.listener.SaveListener;
 
 /**
  * User: ysy
@@ -336,6 +350,7 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
 
 
         datePickerDialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
             public void onDateSet(DatePickerDialog datePickerDialog, int year, int month, int day) {
                 Calendar c = Calendar.getInstance();
                 c.set(year, month, day);
@@ -365,6 +380,89 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
             e.printStackTrace();
         }
     }
+
+    /**
+     * 保存任务
+     */
+    private void saveTask() {
+        /** 1.彈出进度条dialog 或者 设置 保存按钮不可用 */
+        /** 2.获取内容 */
+        /** 3.提交服务器，成功finish ，失败关闭dialog或者设置保存按钮可以使用 */
+        String name = et_name.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            T.show(context, "写点内容吧~~");
+//            textInputLayout.setErrorEnabled(true);
+//            textInputLayout.setError("内容不能为空");
+            return;
+        }
+        task.setUser(currentUser);
+        task.setName(name);
+
+        try {
+            Date time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(tv_date.getText()
+                    .toString().trim().substring(0, 10)
+                    + " " + tv_time.getText().toString().trim() + ":00");
+            task.setTime(time.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (task.getTime() < System.currentTimeMillis()) {
+            T.show(context, "时间已经过去了 T_T ");
+            return;
+        }
+        task.setHasAlerted(false);
+        if (atFriends.size() > 0) {
+            task.setAtFriends(atFriends);
+        }
+        task.save(context, new SaveListener() {
+            @Override
+            public void onSuccess() {
+                L.d("\"保存的task：\" + task.getObjectId()");
+                // 1、本地数据存储
+                new TaskDao(context).create(task);
+                if (CollectionUtils.isNotNull(at)) {
+                    sendInvite(task);
+                }
+                //通知刷新list
+                BusProvider.getInstance().post(new RefreshEvent());
+                // 2.finish
+                A.finishSelf(context);
+            }
+
+            @Override
+            public void onFailure(int arg0, String arg1) {
+                L.e(arg0 + "，task.save，" + arg1);
+            }
+        });
+    }
+
+    /**
+     * 发送好友邀请
+     */
+    private void sendInvite(Task task) {
+        for (User user : at) {
+            Card card = new Card();
+            card.setType(1);// 0。提醒卡
+            card.setFid(currentUser.getObjectId());
+            card.setFusername(currentUser.getUsername());
+            card.setFnick(currentUser.getNick());
+            card.setFavatar(currentUser.getAvatar());
+            card.setZixiName(task.getName());
+            card.setTime(task.getTime());
+            card.settId(user.getObjectId());
+            if (audioUrl != null)
+                card.setAudioUrl(audioUrl);
+            if (imgUrl != null)
+                card.setImgUrl(imgUrl);
+            card.setContent("我在克服拖延症，记得提醒我哟!");
+            L.e(card.toString());
+            String json = new Gson().toJson(card);
+            L.d("发送邀请：" + user.getNick());
+            MsgUtils.sendMsg(context, BmobChatManager.getInstance(context.getApplicationContext()), user, json);
+        }
+    }
+
 
     private void setupRevealBackground(Bundle savedInstanceState) {
         vRevealBackground = (RevealBackgroundView) findViewById(R.id.vRevealBackground);
@@ -404,7 +502,24 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.tv_title:
+                datePickerDialog.show(getFragmentManager(), "");
+                break;
+            case R.id.tv_time:
+                timePickerDialog24h.show(getFragmentManager(), "");
+                break;
+            case R.id.material_menu:
+                super.onBackPressed();
+                break;
+            case R.id.ib_save:
+                if (currentUser != null) {
+                    saveTask();
+                } else {
+                    // 登录对话框
+                    T.show(context, "请先登录");
+                }
+        }
     }
 
     /**
@@ -415,10 +530,24 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 // TODO: 2016/1/18
-                //saveTask();
+                saveTask();
             }
             return true;
         }
+    }
+
+    public void xfVoice(View view) {
+// TODO: 2016/1/19  
+//        SpeechRecognizer mIat = SpeechRecognizer.createRecognizer(context, mInitListener);
+//        //2.设置听写参数，详见《科大讯飞MSC API手册(Android)》SpeechConstant类
+//        mIat.setParameter(SpeechConstant.DOMAIN, "iat");
+//        mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
+//        mIat.setParameter(SpeechConstant.ACCENT, "mandarin ");
+//        mIat.setParameter(SpeechConstant.ASR_PTT, "0");
+//
+//        //3.开始听写
+//        mIat.startListening(mRecoListener);
+
     }
 
     private class EditTextChangeListener implements TextWatcher {
@@ -447,6 +576,13 @@ public class AddTaskActivity extends BaseActivity implements RevealBackgroundVie
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, 0);
+        overridePendingTransition(0, 0);  //不是我要的效果
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, 0); //按下返回键时没有切换动画效果
     }
 }

@@ -131,6 +131,9 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="MyProgressBar" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="@android:progressDrawable">@drawable/progress_horizontal</item>
+    </style>
 
     <style name="SwitchTheme0" parent="@style/AppTheme">
         <item name="colorValue">@color/theme_0</item>

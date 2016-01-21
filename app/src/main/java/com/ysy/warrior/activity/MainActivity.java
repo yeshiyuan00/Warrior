@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
@@ -175,6 +176,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.iv_add:
                 launcherAddTaskActivity(v);
                 break;
+            case R.id.iv_sort:
+                showSelectSort();
+                break;
         }
     }
 
@@ -184,6 +188,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startingLocation[0] += v.getWidth() / 2;
         AddTaskActivity.startUserProfileFromLocation(startingLocation, this);
         overridePendingTransition(0, 0);
+    }
+
+    /**
+     * 弹出选择排序的popupWindow
+     */
+    private void showSelectSort() {
+        View v = View.inflate(context, R.layout.pop_sort, null);
+        //刷新
+        v.findViewById(R.id.refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popWin.dismiss();
+            }
+        });
+        //切换
+        v.findViewById(R.id.change).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentFragment == myTaskFragment) {
+                    currentFragment = otherTaskFragment;
+                } else {
+                    currentFragment = myTaskFragment;
+                }
+                changeFramgnt(R.id.layout_content, currentFragment);
+                popWin.dismiss();
+            }
+        });
+        popWin = new PopupWindow(v, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        popWin.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.card_bg));
+        // popWin.setFocusable(true);
+        popWin.setOutsideTouchable(true); // 点击popWin
+        // 以处的区域，自动关闭
+        // popWin.showAtLocation(iv_sort, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置在屏幕中的显示位置
+        popWin.showAsDropDown(iv_sort, 0, -iv_sort.getHeight() + 10);
     }
 
     private void startIntroAnimation() {
